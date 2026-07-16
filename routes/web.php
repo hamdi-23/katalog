@@ -2,6 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\CatalogController;
+
+Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
