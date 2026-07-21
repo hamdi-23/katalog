@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
@@ -11,7 +12,17 @@ class CatalogController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $categorySlug = $request->input('category');
+        $siteSettings = Setting::current();
+
+        // Accept multi-category filter via `categories` array or comma-separated string `category`
+        $rawCategories = $request->input('categories', $request->input('category'));
+        if (is_string($rawCategories)) {
+            $selectedCategories = array_filter(explode(',', $rawCategories));
+        } elseif (is_array($rawCategories)) {
+            $selectedCategories = array_filter($rawCategories);
+        } else {
+            $selectedCategories = [];
+        }
 
         // Fetch active categories
         $categories = Category::where('is_active', true)->orderBy('name')->get();
@@ -26,19 +37,21 @@ class CatalogController extends Controller
             });
         }
 
-        if ($categorySlug) {
-            $query->whereHas('category', function ($q) use ($categorySlug) {
-                $q->where('slug', $categorySlug);
+        if (!empty($selectedCategories)) {
+            $query->whereHas('category', function ($q) use ($selectedCategories) {
+                $q->whereIn('slug', $selectedCategories);
             });
         }
 
-        $products = $query->orderBy('created_at', 'desc')->get();
+        $products = $query->orderByRaw('sort_order IS NULL, sort_order ASC')->orderBy('created_at', 'desc')->get();
 
         return view('catalog.index', [
             'categories' => $categories,
             'products' => $products,
-            'currentCategory' => $categorySlug,
+            'selectedCategories' => array_values($selectedCategories),
+            'currentCategory' => count($selectedCategories) === 1 ? reset($selectedCategories) : null,
             'search' => $search,
+            'siteSettings' => $siteSettings,
         ]);
     }
 }

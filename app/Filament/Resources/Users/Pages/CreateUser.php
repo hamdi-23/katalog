@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\Categories\Pages;
+namespace App\Filament\Resources\Users\Pages;
 
-use App\Filament\Resources\Categories\CategoryResource;
+use App\Filament\Resources\Users\UserResource;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateCategory extends CreateRecord
+class CreateUser extends CreateRecord
 {
-    protected static string $resource = CategoryResource::class;
+    protected static string $resource = UserResource::class;
 
     protected function getRedirectUrl(): string
     {
@@ -19,7 +19,7 @@ class CreateCategory extends CreateRecord
     {
         return Notification::make()
             ->success()
-            ->title('Kategori Berhasil Ditambahkan!')
-            ->body('Kategori baru telah berhasil dibuat.');
+            ->title('Admin Baru Berhasil Ditambahkan!')
+            ->body('Akun admin baru telah siap digunakan.');
     }
 }

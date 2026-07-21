@@ -243,19 +243,20 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        foreach ($productsData as $prod) {
+        foreach ($productsData as $index => $prod) {
             $cat = $categories[$prod['category_name']];
             Product::updateOrCreate(
                 ['slug' => Str::slug($prod['name'])],
                 [
                     'category_id' => $cat->id,
                     'name' => $prod['name'],
-                    'description' => $prod['description'],
-                    'price' => $prod['price'],
+                    'description' => null,
+                    'price' => null,
+                    'sort_order' => $index + 1,
                     'shopee_url' => $prod['shopee_url'],
                     'tiktok_url' => $prod['tiktok_url'],
                     'is_active' => true,
-                    'image' => null, // Placeholder image handled in view
+                    'image' => null,
                 ]
             );
         }

@@ -16,10 +16,11 @@ class ProductsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
+                ImageColumn::make('images_list')
                     ->label('Foto')
-                    ->square()
-                    ->size(50),
+                    ->stacked()
+                    ->limit(3)
+                    ->size(45),
                 TextColumn::make('name')
                     ->label('Nama Produk')
                     ->searchable()
